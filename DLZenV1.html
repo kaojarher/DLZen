@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-Hant"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>修仙幻想</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#8b3dff">
+<link rel="apple-touch-icon" href="apple-touch-icon.png"><link rel="icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="修仙幻想"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#0e0a1c;--panel:#1b1433;--ac:#8b3dff;--tx:#f1ecff;--mu:#9a90c0}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 0,#2a1b55,var(--bg) 60%);color:var(--tx);font-family:system-ui,-apple-system,"Noto Sans TC",sans-serif;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;max-width:900px;margin:auto}
+h1{font-size:18px;margin:0}
+.coin{background:var(--panel);padding:6px 12px;border-radius:20px;font-weight:700}
+nav{display:flex;gap:6px;max-width:900px;margin:auto;padding:0 14px}
+nav button{flex:1}
+button{background:var(--ac);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:700;cursor:pointer}
+button.alt{background:#352a5c}button:disabled{opacity:.4}
+nav button.on{outline:2px solid #fff}
+main{max-width:900px;margin:auto;padding:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,2vw,14px)}
+.grid.wide{grid-template-columns:repeat(auto-fill,minmax(100px,1fr))}
+.card{position:relative;aspect-ratio:3/4.3;border-radius:10px;padding:3px;background:#888;cursor:pointer;transform:perspective(600px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .35s,box-shadow .35s;will-change:transform}
+.card.tilt{transition:transform .06s;box-shadow:0 14px 28px #000a}
+.big .card{touch-action:none}
+.card .in::after{content:'';position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at var(--mx,50%) var(--my,50%),#fffa,transparent 42%);opacity:0;transition:opacity .3s}
+.card.tilt .in::after{opacity:.55}
+.card .in::before{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;mix-blend-mode:color-dodge;background:linear-gradient(115deg,transparent 15%,#ff3ea0aa 30%,#3effd0aa 45%,#ffe83eaa 60%,#7a3effaa 75%,transparent 90%);background-size:250% 250%;background-position:var(--bx,50%) var(--by,50%);transition:opacity .3s}
+.card.tilt:not(.common) .in::before{opacity:.75}
+.card.tilt.common .in::before{opacity:.25}
+.card .in{position:absolute;inset:3px;border-radius:8px;overflow:hidden;background-color:hsl(var(--h) 50% 18%);background-size:cover;background-position:calc(50% + var(--tx,0px)) 25%;transition:background-position .1s}
+.card .ic{position:absolute;inset:0;display:grid;place-items:center;transform:translate(var(--tx,0px),var(--ty,0px)) scale(1.08);transition:transform .1s;font-size:clamp(30px,9vw,60px);filter:drop-shadow(0 4px 6px #0008)}
+.card .p{position:absolute;left:5px;top:1px;font-size:clamp(16px,4.5vw,26px);font-weight:900;font-style:italic;text-shadow:0 2px 3px #000}
+.card .r{position:absolute;right:4px;top:4px;font-size:9px;background:#0009;padding:1px 5px;border-radius:4px;letter-spacing:.5px}
+.card .n{position:absolute;left:5px;bottom:5px;font-size:10px;background:#000a;padding:2px 7px;border-radius:10px}
+.card .sk{position:absolute;right:4px;bottom:4px;width:clamp(22px,6vw,34px);aspect-ratio:1;border-radius:50%;background:#000b;display:grid;place-items:center;font-size:clamp(11px,3vw,18px);border:1px solid #fff5}
+.common{background:linear-gradient(135deg,#ddd,#777)}
+.cosplay{background:linear-gradient(135deg,#3fe0a0,#1a7a66)}
+.epic{background:linear-gradient(135deg,#4aa8ff,#2a3fd0)}
+.legend{background:linear-gradient(135deg,#ff3b3b,#ffd33b,#3bff8a,#3bb2ff,#c43bff);background-size:300% 300%;animation:rb 3s linear infinite}
+@keyframes rb{50%{background-position:100% 100%}}
+.lock{filter:grayscale(1) brightness(.25);pointer-events:none}
+.sel{outline:3px solid #ffd33b;outline-offset:2px}
+.hit{animation:hit .5s}
+@keyframes hit{30%{transform:scale(1.12) rotate(-2deg);box-shadow:0 0 22px #ffd33b}}
+.dead{opacity:.35;filter:grayscale(1)}
+.bar{display:flex;justify-content:space-between;align-items:center;margin:10px 0;gap:8px}
+.tip{color:var(--mu);font-size:13px}
+.vs{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0;padding:10px;border-radius:12px;background:linear-gradient(100deg,#c33 0 49%,#27f 51%)}
+.vs b{font-size:26px;font-style:italic}
+.hp{flex:1;text-align:center;font-weight:800}
+.hp i{display:block;height:8px;border-radius:4px;background:#fff;margin-top:4px;transition:width .5s;width:100%}
+.log{background:var(--panel);border-radius:10px;padding:10px;min-height:48px;font-size:14px;margin-top:10px}
+.modal{position:fixed;inset:0;background:#000c;display:grid;place-items:center;z-index:9;padding:16px;overflow:auto}
+.modal .box{background:var(--panel);border-radius:14px;padding:16px;max-width:520px;width:100%;text-align:center}
+.big{width:min(220px,60vw);margin:10px auto}
+.skill{background:var(--ac);border-radius:10px;padding:10px;margin:8px 0;font-size:14px}
+.hide{display:none}
+.sm{padding:6px 10px;font-size:13px}
+.el{position:absolute;left:5px;top:clamp(30px,8vw,38px);width:clamp(15px,4.2vw,20px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-size:clamp(9px,2.4vw,12px);font-weight:900;color:#fff;border:1px solid #fffa;background:var(--ec);z-index:3}
+.rv{animation:rv .7s both}.glow{filter:drop-shadow(0 0 10px #ffd33b)}
+@keyframes rv{0%{transform:rotateY(180deg) scale(.5);opacity:0}60%{transform:rotateY(-12deg) scale(1.08);opacity:1}100%{transform:none}}
+.dmg.crit{color:#ff5a5a;font-size:clamp(30px,9vw,52px)}.dmg.adv{color:#7dffb0}
+.day{padding:8px 2px;border-radius:8px;background:#352a5c;font-size:12px}.day.on{background:var(--ac)}.day.done{opacity:.45}
+.cn{display:inline-block;width:.9em;height:.9em;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff3a8,#f5b82e 60%,#b57a0c);vertical-align:-.1em;margin-right:2px;box-shadow:0 0 0 1px #8a5a00}
+.pile{display:inline-grid;place-items:center;width:30%;aspect-ratio:3/4.3;border-radius:10px;background:repeating-linear-gradient(45deg,#6a4fd8,#6a4fd8 8px,#5a3fc8 8px,#5a3fc8 16px);border:3px solid #ddd;font-size:30px;font-weight:900;margin:6px 0}
+.banner{text-align:center;font-size:24px;font-weight:900;padding:8px;margin:8px 0;background:linear-gradient(90deg,transparent,#27f9,transparent)}
+.banner.opp{background:linear-gradient(90deg,transparent,#e52b,transparent)}
+.card.empty{background:#ffffff14;cursor:default}
+.dmg{position:absolute;inset:0;z-index:5;display:grid;place-items:center;font-size:clamp(24px,7vw,40px);font-weight:900;color:#ffd33b;text-shadow:0 2px 0 #000,0 0 10px #f80;animation:up 1s forwards;pointer-events:none}
+@keyframes up{0%{transform:scale(.4);opacity:1}30%{transform:scale(1.3)}100%{opacity:0;transform:translateY(-24px)}}
+.act{outline:3px solid #ffd33b;outline-offset:2px}.tg{outline:3px dashed #ff5a5a;cursor:crosshair}.pt{width:min(192px,55vw);margin:0 auto 8px}.tx{font-size:16px;line-height:1.7;min-height:4em;text-align:left}
+.ad{position:absolute;right:4px;top:4px;z-index:5;font-weight:900;font-size:22px;color:#7dff7d;text-shadow:0 0 4px #000}.ad.bad{color:#ff6b6b}
+nav button{padding:10px 4px;font-size:14px}
+select{background:#2a2440;color:#fff;border:1px solid #6b5aa8;border-radius:8px;padding:6px;font-size:13px}
+.ds{display:inline-block;width:.8em;height:.8em;margin:0 2px 0 8px;background:linear-gradient(135deg,#e8d9ff,#9b7bff);transform:rotate(45deg);vertical-align:-.05em;box-shadow:0 0 5px #b79bff}
+.qi{position:absolute;left:4px;bottom:22%;z-index:5;font-size:11px;color:#ffd84a;text-shadow:0 0 3px #000;letter-spacing:1px;font-weight:700}.mvn{position:absolute;left:50%;top:32%;z-index:7;white-space:nowrap;font-weight:900;font-size:13px;padding:2px 9px;border-radius:12px;color:#fff;text-shadow:0 1px 2px #000;box-shadow:0 0 8px #000a;pointer-events:none;animation:mvf 1.3s forwards}.mvn.ult{font-size:16px;box-shadow:0 0 16px #fff;animation-duration:1.6s}@keyframes mvf{0%{opacity:0;transform:translate(-50%,10px) scale(.6)}18%{opacity:1;transform:translate(-50%,0) scale(1.15)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-12px)}}
+#gd{position:fixed;inset:auto 0 0 0;z-index:8;pointer-events:none}
+.gp{pointer-events:auto;display:flex;gap:10px;align-items:flex-start;width:calc(100% - 16px);max-width:560px;margin:0 auto 8px;padding:10px;background:#241a4af2;border:1px solid #8a72d8;border-radius:16px;box-shadow:0 6px 24px #000a;transform-origin:100% 100%;transition:transform .35s,opacity .35s}
+.gp.min{transform:translate(45%,60%) scale(.08);opacity:0;pointer-events:none}
+.gpt{width:min(120px,28vw);flex:none}.gb{flex:1;position:relative;min-height:150px;display:flex;flex-direction:column;gap:6px}.gb p{margin:0;font-size:15px;line-height:1.6;flex:1}
+.gx{position:absolute;right:0;top:0;font-size:12px;color:#b9a8ff;cursor:pointer}
+.gi{pointer-events:auto;position:fixed;right:12px;bottom:12px;width:52px;z-index:8;animation:gpulse 2s infinite;transition:transform .3s,opacity .3s}
+.gi.off{opacity:0;pointer-events:none;transform:scale(.3)}
+.gi i{position:absolute;right:-6px;top:-6px;background:#ffd33b;color:#000;font-style:normal;font-weight:900;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:13px;z-index:3}
+@keyframes gpulse{50%{box-shadow:0 0 14px #ffd33b}}
+#bg{position:fixed;inset:0;z-index:-1;overflow:hidden;display:flex;flex-wrap:wrap;justify-content:center;align-content:center;pointer-events:none;opacity:.34;filter:saturate(.85)}
+#bg::after{content:'';position:fixed;inset:0;background:radial-gradient(circle at 50% 30%,#0b081899,#0b0818ee)}
+#bg .card{width:var(--bw,160px);flex:none;border-radius:0;padding:0;box-shadow:none;transform:none;cursor:default}#bg .card .in{inset:0;border-radius:0}
+.mq{overflow:hidden;margin:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mqt{display:flex;gap:6px;width:max-content;animation:mqs 80s linear infinite}
+.mqt .card{width:40px;flex:none;cursor:default;border-radius:6px;padding:1px;transform:none}.mqt .card .in{inset:1px;border-radius:5px}
+@keyframes mqs{to{transform:translateX(-50%)}}
+</style></head><body>
+<header><h1>✦ 修仙幻想</h1><span><button class="alt sm" id="snd"></button> <button class="alt sm" id="inst">安裝 App</button></span><div class="coin"><i class="cn"></i> <span id="coin"></span> <i class="ds"></i> <span id="dust"></span></div></header>
+<nav><button data-v="battle">對戰</button><button data-v="gacha">抽卡</button><button data-v="album">圖鑑</button><button data-v="quest">任務</button><button data-v="shop">商店</button><button data-v="event">活動</button></nav>
+<main id="app"></main>
+<div id="modal" class="modal hide"></div>
+<script>
+const NM=['月影','星空','霜刃','焰舞','雷鳴','翠林','暮光','夜幕','白羽','赤霞','深海','天穹','幻蝶','鋼鐵','櫻吹'];
+const TY=['術士','符紋師','劍姬','賢者','練體士','女修','陣法師','魔修'];
+const sv=(c,d)=>`<svg viewBox="0 0 24 24" width="1.1em" height="1.1em" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-.2em">${d}</svg>`;
+const SK=[{i:sv('#ffb066','<path d="M4 20l3-1 12-12-2-2L5 17z"/><path d="M14 6l4 4"/>'),n:'反擊',d:'近距離攻擊對手時，若落敗仍會造成反擊傷害（自身戰力 30%）'},{i:sv('#6ff0b0','<path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"/>'),n:'治療',d:'每次對決後，為己方隊伍回復 3 點生命'},{i:sv('#ffe14a','<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'),n:'雷擊',d:'對決時戰力額外提升 25%'}];
+const RAR={common:'COMMON',cosplay:'cosplay',epic:'EPIC',legend:'LEGEND'};
+const EL=['火','水','木','光','暗'],EC=['#e8451e','#2a8cff','#2fae4a','#d9a400','#7a3fd0'];
+const emul=(a,b)=>{const w=[[0,2],[2,1],[1,0],[3,4],[4,3]];return w.some(([x,y])=>x==a&&y==b)?1.3:w.some(([x,y])=>x==b&&y==a&&x<3)?.8:1};
+let AC;const snd=(f,d=.09,t='square',v=.05)=>{if(S.mute)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const o=AC.createOscillator(),g=AC.createGain();o.type=t;o.frequency.value=f;g.gain.value=v;o.connect(g);g.connect(AC.destination);o.start();g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+d);o.stop(AC.currentTime+d)}catch(e){}};
+const jingle=a=>a.forEach((f,i)=>setTimeout(()=>snd(f,.14,'triangle',.07),i*110));
+let seed=7;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
+const POOL=[];
+/* ===== 卡圖修仙者圖(CSS Sprite)設定 =====
+   換圖只需替換對應的 cards1~3.jpg：格線版面(欄×列)相同即可，任何解析度皆可，位置會依實際圖片尺寸自動換算。
+   新增圖片檔時，在 sheets 加一筆即可；卡片編號依 sheets 順序、由左至右、由上而下連續對應。
+   版面改變時，只需調整該張圖的 cols / rows / ref。 */
+const SPRITE={
+ ar:1.45,                     // 卡片圖框 高/寬 比
+ top:.25,                     // 圖比圖框更高時，垂直裁切位置：0=靠上 1=靠下
+ left:.5,                     // 圖比圖框更寬時，水平裁切位置：0=靠左 1=靠右
+ sheets:[                     // ref=基準尺寸[寬,高]px；inset=每格內縮[左右,上下]px(去掉邊框)，皆以 ref 計
+  {src:'cards1.jpg',cols:5,rows:3,ref:[1376,768],inset:[9,10]},
+  {src:'cards2.jpg',cols:5,rows:3,ref:[1376,768],inset:[9,10]},
+  {src:'cards3.jpg',cols:5,rows:3,ref:[1376,768],inset:[9,10]}
+ ]
+};
+const sprStyle=document.head.appendChild(document.createElement('style')),sprCss=[];
+function buildSheet(si,iw,ih){
+ const{ar,top,left}=SPRITE,{src,cols,rows,ref:[rw,rh],inset:[ix,iy]}=SPRITE.sheets[si],
+  base=SPRITE.sheets.slice(0,si).reduce((n,s)=>n+s.cols*s.rows,0),pc=n=>+(n*100).toFixed(4)+'%';let css='';
+ for(let k=0;k<cols*rows;k++){
+  const r=Math.floor(k/cols),c=k%cols;
+  const fx=(c*rw/cols+ix)/rw,fw=(rw/cols-2*ix)/rw,fy=(r*rh/rows+iy)/rh,fh=(rh/rows-2*iy)/rh;
+  const cw=fw*iw,ch=fh*ih,tall=ch>=cw*ar;                 // 等同 background-size:cover 的視窗計算
+  const ww=tall?fw:ch/ar/iw,wh=tall?cw*ar/ih:fh;
+  const wx=fx+left*(fw-ww),wy=fy+top*(fh-wh);
+  css+=`.card .in.a${base+k+1}{background-image:url(${src});background-repeat:no-repeat;background-size:${pc(1/ww)} ${pc(1/wh)};background-position:${pc(wx/(1-ww))} ${pc(wy/(1-wh))}}`;
+ }
+ sprCss[si]=css;sprStyle.textContent=sprCss.join('');
+}
+SPRITE.sheets.forEach((sh,i)=>{buildSheet(i,...sh.ref);
+ Object.assign(new Image(),{onload(){buildSheet(i,this.naturalWidth,this.naturalHeight)},src:sh.src})});
+
+const DATA=[["common", 7, 1], ["common", 2, 1], ["cosplay", 5, 1], ["cosplay", 5, 2], ["legend", 50, 3], ["common", 10, 0], ["common", 15, 1], ["cosplay", 23, 2], ["epic", 25, 0], ["legend", 35, 0], ["common", 17, 1], ["common", 28, 3], ["legend", 29, 1], ["epic", 30, 1], ["legend", 30, 2], ["common", 25, 0], ["common", 24, 4], ["legend", 25, 4], ["epic", 36, 1], ["legend", 37, 3], ["common", 30, 3], ["common", 32, 1], ["common", 38, 3], ["epic", 40, 0], ["legend", 40, 1], ["common", 35, 2], ["epic", 36, 3], ["legend", 36, 0], ["epic", 45, 1], ["legend", 45, 4], ["common", 38, 1], ["legend", 40, 0], ["legend", 45, 1], ["legend", 45, 0], ["legend", 50, 1],
+ /* 36-45：新增卡（對應 cards3.jpg 第 6~15 格）[稀有度, 戰力, 屬性(0火 1水 2木 3光 4暗)] */
+ ["epic", 38, 3], ["epic", 34, 1], ["epic", 41, 0], ["cosplay", 22, 2], ["legend", 46, 3],
+ ["cosplay", 24, 4], ["common", 30, 0], ["common", 20, 2], ["cosplay", 19, 0], ["common", 27, 4]];
+DATA.forEach(([r,p,el],k)=>{const id=k+1;POOL.push({id,r,p,el,sk:id%3,h:(id*37)%360,name:NM[id%15]+TY[id%8]})});
+
+const DEF=()=>({coins:300,own:{},deck:[],page:0,w:0,l:0,stage:1,sel:1,pity:0,daily:{d:'',s:0},mute:0,sty:{},qc:{},pulls:0,manual:0,dust:0,tut:0,fast:0,dq:null,tk:0,shop:null,ev:null,tw:0,flt:null});let S=DEF();
+try{const x=JSON.parse(localStorage.getItem('cb2')||'null');if(x)S=x}catch(e){}
+S=Object.assign(DEF(),S);
+const save=()=>{try{localStorage.setItem('cb2',JSON.stringify(S))}catch(e){}$('#coin').textContent=S.coins;$('#dust').textContent=S.dust||0;const sb=$('#snd');if(sb)sb.textContent='音效 '+(S.mute?'關':'開')};
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const pw=(c,lv)=>c.p+(lv||0);
+const lvOf=id=>S.own[id]||0;
+function card(c,o={}){const lv=o.lv!==undefined?o.lv:Math.max(0,lvOf(c.id)-1);
+return `<div class="card ${c.r} ${o.cls||''}" data-id="${c.id}" style="--h:${c.h}"><div class="in a${c.id}"><span class="p">${o.p!==undefined?o.p:pw(c,lv)}</span><span class="r">${RAR[c.r]}</span><span class="n">NO.${c.id}</span><span class="el" style="--ec:${EC[c.el]}">${EL[c.el]}</span><span class="sk">${SK[c.sk].i}</span></div></div>`}
+const bgW=()=>Math.ceil(Math.sqrt(innerWidth*innerHeight/(12*1.433)))+'px';
+function paintBg(){let b=$('#bg');if(!b){b=document.body.insertBefore(document.createElement('div'),document.body.firstChild);b.id='bg'}
+const rnd=a=>a.sort(()=>Math.random()-.5),un=rnd(POOL.filter(c=>!lvOf(c.id))).slice(0,12);if(un.length<12)un.push(...rnd(POOL.filter(c=>lvOf(c.id))).slice(0,12-un.length));
+b.style.setProperty('--bw',bgW());b.innerHTML=un.map(c=>`<div class="card ${c.r}"><div class="in a${c.id}"></div></div>`).join('')}
+addEventListener('resize',()=>{const b=$('#bg');if(b)b.style.setProperty('--bw',bgW())});
+function view(v){S.view=v;paintBg();document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.v===v));({battle,gacha,album,quest,shop,event:evPage})[v]()}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>view(b.dataset.v));
+function modal(h){const m=$('#modal');m.innerHTML=`<div class="box">${h}<p><button onclick="$('#modal').classList.add('hide')">關閉</button></p></div>`;m.classList.remove('hide')}
+function detail(id){const c=POOL[id-1],lv=Math.max(0,lvOf(id)-1),s=SK[c.sk];
+modal(`<h3>${c.name} <span class="tip">Lv+${lv}</span></h3><div class="big">${card(c,{lv})}</div><div>屬性 ${EL[c.el]}｜戰力 <b>${pw(c,lv)}</b></div><div class="skill">${s.i} ${s.n}：${s.d}</div><div class="skill">專屬招式：${CM[id-1][0]}<br>必殺【${CM[id-1][1]}】：${UD2[c.el*2+c.id%2]}</div><p>${lv<5?`<button id="up">強化 → Lv+${lv+1}（靈丹 ${UC(lv)}）</button>`:'已強化至滿級'} <span class="tip">持有靈丹 ${S.dust||0}</span></p>`);
+const u=$('#up');if(u)u.onclick=()=>{if((S.dust||0)<UC(lv)){u.textContent='靈丹不足（重複抽到滿等卡、對戰與每日任務可得）';return}S.dust-=UC(lv);S.own[id]++;save();snd(660);detail(id)}}
+document.addEventListener('click',e=>{const k=e.target.closest('[data-det]');if(k&&lvOf(+k.dataset.det))detail(+k.dataset.det)});
+
+/* 圖鑑 */
+function album(){const L=filt(POOL),pages=Math.max(1,Math.ceil(L.length/9));S.page=Math.min(S.page,pages-1);const pg=L.slice(S.page*9,S.page*9+9),have=Object.keys(S.own).length;
+$('#app').innerHTML=`<div class="bar"><b>圖鑑 ${S.page+1}/${pages}</b><span class="tip">已收集 ${have}/${POOL.length}｜符合 ${L.length} 張</span></div>${fbar(1)}
+<div class="grid">${pg.map(c=>`<div data-det="${c.id}">${card(c,{cls:lvOf(c.id)?'':'lock'})}</div>`).join('')}</div>
+<div class="bar"><button class="alt" id="pv">◀ 上一頁</button><button class="alt" id="nx">下一頁 ▶</button></div>
+<p class="tip">滑鼠移到卡牌上（手機可按住拖曳）可看 3D 傾斜與全息閃光。點擊卡牌查看技能。重複抽到同一張卡，戰力 +1（最多 +5）。</p>`;
+$('#pv').onclick=()=>{S.page=(S.page+pages-1)%pages;album()};$('#nx').onclick=()=>{S.page=(S.page+1)%pages;album()};bindF(album)}
+
+/* 抽卡 */
+const DU={common:5,cosplay:10,epic:25,legend:60},UC=lv=>20*(lv+1);
+function draw(){const x=rnd()*100;const r=x<2?'legend':x<10?'epic':x<30?'cosplay':'common';const l=POOL.filter(c=>c.r===r);return l[Math.floor(Math.random()*l.length)]}
+const pickR=r=>{const l=POOL.filter(c=>c.r===r);return l[Math.floor(Math.random()*l.length)]};
+function pull(){S.pity++;S.pulls=(S.pulls||0)+1;dqs().p++;const c=S.pity>=30?pickR('legend'):draw();if(c.r=='epic'||c.r=='legend')S.pity=0;return c}
+function gacha(){const mq=POOL.map(c=>`<div class="card ${c.r}"><div class="in a${c.id}"></div></div>`).join('');$('#app').innerHTML=`<div class="mq"><div class="mqt">${mq+mq}</div></div><div class="bar"><b>召喚</b><span class="tip">機率：傳說 2%｜史詩 8%｜Cosplay 20%｜普通 70%｜保底說明請點右下角「?」</span></div>
+<div class="bar"><button id="g1">單抽 <i class="cn"></i>30</button><button id="g10">十連 <i class="cn"></i>270</button></div>`;
+const go=n=>{const cost=n==10?270:30;if(S.coins<cost)return modal('靈石不足！去對戰賺取吧。');S.coins-=cost;
+const got=Array.from({length:n},pull);if(n==10&&!got.some(c=>c.r=='epic'||c.r=='legend')){got[9]=pickR(Math.random()<.2?'legend':'epic');S.pity=0}let du=0;got.forEach(c=>{if((S.own[c.id]||0)>=6){du+=DU[c.r];S.dust=(S.dust||0)+DU[c.r]}else S.own[c.id]=(S.own[c.id]||0)+1});
+if(!S.deck.length)autoDeck();save();
+modal(`<h3>獲得卡牌</h3><div class="grid wide">${got.map((c,i)=>`<div class="rv ${c.r=='legend'?'glow':''}" style="animation-delay:${i*.18}s">${card(c,{lv:0})}</div>`).join('')}</div>${du?`<p class="tip">滿等重複卡轉為靈丹 +${du}</p>`:''}`);got.forEach((c,i)=>setTimeout(()=>snd(c.r=='legend'?880:c.r=='epic'?660:440,.12,'triangle',.06),i*180+300));if(got.some(c=>c.r=='legend'))setTimeout(()=>jingle([523,659,784,1047]),n*180+400)};
+$('#g1').onclick=()=>go(1);$('#g10').onclick=()=>go(10)}
+function firstGift(){for(let i=0;i<6;i++){const c=POOL.filter(c=>c.r==='common')[i*2];S.own[c.id]=1}autoDeck()}
+function autoDeck(){S.deck=POOL.filter(c=>lvOf(c.id)).sort((a,b)=>pw(b,lvOf(b.id)-1)-pw(a,lvOf(a.id)-1)).slice(0,6).map(c=>c.id)}
+if(!Object.keys(S.own).length)firstGift();
+
+/* ===== 劇情章節與任務 ===== */
+const SP=[{n:'旁白'},{n:'莉莉',id:4},{n:'艾琳',id:2},{n:'影',id:15},{n:'修仙聖女',id:40},{n:'修仙者'},{n:'幽靈船長',id:5},{n:'冰霜女王',id:6},{n:'鋼鐵巨像',id:7},{n:'鬼面武士',id:8},{n:'死靈法師',id:11}];
+/* t=章名 s=簡介 boss=BOSS卡編號 i=章節開場 b=BOSS戰前 o=通關後；對話格式 [說話者編號,台詞] */
+const CH=[
+{t:'翠林序章',s:'六塊修仙碎片墜入大陸，修仙者的力量甦醒。',boss:5,
+i:[[0,'夜空裂開，六塊修仙碎片墜落大陸。你在翠林中醒來，掌心浮現一張發光的卡牌。'],[1,'你終於醒了！我是修仙者莉莉。碎片被邪氣污染，只有修仙者能淨化它們。'],[1,'先擊退林中的魔物吧，用卡牌的力量！']],
+b:[[6,'交出碎片，凡人！這片海岸的亡靈歸我統治！'],[1,'小心，他是被碎片驅使的幽靈船長！']],
+o:[[6,'碎片……好溫暖……我想起來了……'],[1,'第一塊碎片淨化了！下一站，霜凍冰窟。']]},
+{t:'霜凍冰窟',s:'碎片的寒氣凍結北方，冰窟深處傳來歌聲。',boss:6,
+i:[[0,'北方被永冬籠罩，冰窟深處傳來悲傷的歌聲。'],[3,'我是影，暗殺者。冰窟魔物太多，我跟你們同行。']],
+b:[[7,'冰是永恆的，凡人，為何要打破寧靜？'],[3,'她的心被碎片冰封了，打倒她！']],
+o:[[7,'謝謝你……我終於能融化了。'],[3,'第二塊碎片。走吧，機械都市還在等我們。']]},
+{t:'機械都市',s:'守護巨像失控，工程師艾琳求援。',boss:7,
+i:[[0,'蒸氣與齒輪轟鳴，機械都市的守護巨像失控了。'],[2,'我是工程師艾琳！巨像是我爸爸造的，碎片讓它暴走了，幫幫我！']],
+b:[[8,'偵測到入侵者。啟動排除程序。'],[2,'核心在胸口，攻擊那裡！']],
+o:[[2,'巨像停下了……謝謝你，我要加入你的隊伍！'],[0,'第三塊碎片回到了你手中。']]},
+{t:'櫻影東瀛',s:'櫻花林殺氣瀰漫，武士團被碎片操控。',boss:8,
+i:[[0,'櫻花林中殺氣瀰漫，武士團被碎片操控，刀鋒指向每一位旅人。'],[3,'這片土地我曾來過……小心他們的主將。']],
+b:[[9,'櫻花落盡之時，便是你的終點。'],[1,'他的刀被碎片侵蝕了，看準破綻！']],
+o:[[9,'吾之刀……終於回到正途。碎片，請收下。'],[1,'第四塊碎片。只剩墓園與王座了。']]},
+{t:'暗影墓園',s:'亡者低語，第五塊碎片藏在墓園深處。',boss:11,
+i:[[0,'荒涼的墓園裡，亡者在低語，第五塊碎片就在其中。'],[1,'這裡暗屬性很強，光屬性的卡牌會很有用。']],
+b:[[10,'生與死的界線，由我來決定。'],[3,'別被她的亡靈嚇倒！']],
+o:[[10,'原來……我只是想守護這些亡者。'],[1,'五塊碎片了！現在，前往修仙王座。']]},
+{t:'修仙王座',s:'最後一塊碎片在王座上，等著你。',boss:40,
+i:[[0,'修仙王座懸於天際，最後一塊碎片在那裡閃耀。'],[1,'王座上的人……是修仙聖女？她被碎片吞噬了！']],
+b:[[4,'修仙屬於我，所有人都將在永恆的星光中安睡。'],[5,'我是修仙者！我會讓妳想起真正的自己！']],
+o:[[4,'碎片離開了……我自由了。謝謝你，修仙者。'],[0,'六塊修仙碎片重新匯聚，天空恢復寧靜。你的傳說才剛開始……《修仙幻想》完']]}];
+function story(L,cb){let i=0;const m=$('#modal'),show=()=>{const[w,t]=L[i],sp=SP[w];m.innerHTML=`<div class="box">${sp.id?`<div class="card common pt"><div class="in a${sp.id}"></div></div>`:''}<b>${sp.n}</b><p class="tx">${t}</p><button id="nx2">${i<L.length-1?'下一句 ▶':'繼續'}</button></div>`;m.classList.remove('hide');const sk=typeIt($('#modal .tx'),t);$('#nx2').onclick=()=>{if(sk())return;if(++i<L.length)show();else{m.classList.add('hide');cb&&cb()}}};show()}
+function fight(){const st=S.sel,c=CH[(st-1)/5|0],k=st%5==1?'i':st%5==0?'b':'',key='p'+st;if(k&&!S.sty[key]){S.sty[key]=1;save();story(c[k],fight2)}else fight2()}
+const dqs=()=>{const t=ld(new Date());if(!S.dq||S.dq.d!==t)S.dq={d:t,b:0,p:0,w:0,c:{}};return S.dq};
+const DQ=[['b','對戰 3 場',3,60,5],['w','勝利 1 場',1,50,5],['p','召喚 1 次',1,40,5]];
+const TUT=[[1,'歡迎來到《修仙幻想》，修仙者！我是修仙者莉莉，先教你幾件事。'],[1,'「對戰」：點卡牌組成 6 人隊伍，前 3 張上場。可切換「手動戰鬥」，親自選擇攻擊目標，▲表示屬性剋制。'],[1,'「抽卡」：用靈石召喚新卡。重複的卡會強化，滿級後化為靈丹，可在卡牌詳情頁繼續強化。'],[1,'隊伍中同屬性卡牌湊滿 3 張以上有共鳴加成。每天記得領取登入獎勵與「任務」頁的獎勵！'],[1,'去吧，第一塊修仙碎片在等著你。']];
+const nOwn=()=>Object.keys(S.own).length;
+const QS=[['q1','初出茅廬','收集 10 張卡',()=>nOwn()>=10,150],['q2','圖鑑學徒','收集 25 張卡',()=>nOwn()>=25,400],['q3','完美圖鑑','收集全部卡片',()=>nOwn()>=POOL.length,1500],
+['q4','召喚新手','累計召喚 20 次',()=>(S.pulls||0)>=20,200],['q5','傳說降臨','擁有 1 張傳說卡',()=>POOL.some(c=>c.r=='legend'&&lvOf(c.id)),300],['q6','五行俱全','火水木光暗屬性各擁有 1 張',()=>[0,1,2,3,4].every(e=>POOL.some(c=>c.el==e&&lvOf(c.id))),300],
+['q7','百戰勇士','累計勝利 20 場',()=>S.w>=20,500],['q8','強化大師','有一張卡強化到 Lv+5',()=>POOL.some(c=>lvOf(c.id)>=6),400]];
+function quest(){const dn=i=>i<5?S.stage>(i+1)*5:!!S.sty.o30;
+const dq=dqs();$('#app').innerHTML=`<div class="bar"><b>每日任務</b><span class="tip">每日重置｜靈丹 ${S.dust||0}</span></div>`+DQ.map(t=>`<div class="skill"><b>${t[1]}</b> (${Math.min(dq[t[0]],t[2])}/${t[2]})｜<i class="cn"></i>${t[3]}＋靈丹 ${t[4]} <button class="sm" data-dq="${t[0]}" ${dq[t[0]]>=t[2]&&!dq.c[t[0]]?'':'disabled'}>${dq.c[t[0]]?'已領取':dq[t[0]]>=t[2]?'領取':'未完成'}</button></div>`).join('')+`<div class="bar"><b>故事章節</b><span class="tip">已通關至 ${S.stage-1}/30</span></div>`+CH.map((c,i)=>{const u=S.stage>i*5;return `<div class="skill" style="opacity:${u?1:.5}"><b>第 ${i+1} 章｜${c.t}</b> ${dn(i)?'✔':''}<br><span class="tip">${u?c.s:'通關第 '+i*5+' 關後解鎖'}</span>${u?`<br><button class="alt sm" data-rp="${i}">重溫劇情</button>`:''}</div>`}).join('')+`<div class="bar"><b>任務</b></div>`+QS.map(q=>{const ok=q[3](),cl=S.qc[q[0]];return `<div class="skill"><b>${q[1]}</b>｜${q[2]}<br>獎勵 <i class="cn"></i>${q[4]} <button class="sm" data-q="${q[0]}" ${ok&&!cl?'':'disabled'}>${cl?'已領取':ok?'領取':'未完成'}</button></div>`}).join('');
+document.querySelectorAll('[data-rp]').forEach(b=>b.onclick=()=>{const i=+b.dataset.rp;story(dn(i)?CH[i].i.concat(CH[i].o):CH[i].i)});
+document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{const q=QS.find(x=>x[0]==b.dataset.q);S.qc[q[0]]=1;S.coins+=q[4];save();jingle([523,659,784]);quest()});document.querySelectorAll('[data-dq]').forEach(b=>b.onclick=()=>{const t=DQ.find(x=>x[0]==b.dataset.dq);dq.c[t[0]]=1;S.coins+=t[3];S.dust=(S.dust||0)+t[4];save();jingle([523,659]);quest()})}
+
+/* ===== 商店 / 限定活動 / 限定卡池 ===== */
+/* 限定活動每 7 天輪替一檔（依日期自動切換）；up=本檔限定UP傳說卡編號，可自行增減檔期 */
+const EV=[{n:'修仙祭',up:40,d:'聖女的祝福降臨大陸，星光下的召喚格外靈驗'},{n:'魔修的寶藏',up:5,d:'空間結界再度開啟，傳說中的寶藏重現人間'},{n:'豐原星修真者',up:10,d:'豐原星修真者高舉炎陽球，守護每一位修仙者'},{n:'暗影之夜',up:15,d:'月色之下，影的刀刃悄悄出鞘'}];
+const EM=[['w','活動期間勝利 5 場',5,200,0,1],['b','通關 BOSS 關 1 次',1,0,30,1],['n','限定召喚 10 次',10,300,0,1]]; /* [key,名稱,需求,靈石,靈丹,免費券] */
+const evNow=()=>{const D=864e5,t0=new Date(2026,0,1),el=Date.now()-t0,k=Math.floor(el/(7*D));return{k,e:EV[k%EV.length],left:Math.ceil(((k+1)*7*D-el)/D)}};
+const evS=()=>{const k=evNow().k;if(!S.ev||S.ev.k!==k)S.ev={k,w:0,b:0,n:0,p:0,c:{}};return S.ev};
+const PR={common:150,cosplay:300,epic:600,legend:1200};
+const shp=()=>{const t=ld(new Date());if(!S.shop||S.shop.d!==t)S.shop={d:t,b:{},x:0};return S.shop};
+const spec=()=>{let h=[...ld(new Date())].reduce((a,c)=>(a*31+c.charCodeAt(0))%1000003,7),r=[];while(r.length<3){h=(h*16807+11)%2147483647;const id=h%POOL.length+1;if(!r.includes(id))r.push(id)}return r};
+function reveal(got){let du=0;got.forEach(c=>{if((S.own[c.id]||0)>=6){du+=DU[c.r];S.dust=(S.dust||0)+DU[c.r]}else S.own[c.id]=(S.own[c.id]||0)+1});if(!S.deck.length)autoDeck();save();
+modal(`<h3>獲得卡牌</h3><div class="grid wide">${got.map((c,i)=>`<div class="rv ${c.r=='legend'?'glow':''}" style="animation-delay:${i*.18}s">${card(c,{lv:0})}</div>`).join('')}</div>${du?`<p class="tip">滿等重複卡轉為靈丹 +${du}</p>`:''}`);
+got.forEach((c,i)=>setTimeout(()=>snd(c.r=='legend'?880:c.r=='epic'?660:440,.12,'triangle',.06),i*180+300))}
+function shop(){const h=shp(),ids=spec();
+$('#app').innerHTML=`<div class="bar"><b>每日特價</b><span class="tip">每日刷新｜每種限購 1 次｜8 折</span></div><div class="grid">${ids.map(id=>{const c=POOL[id-1];return `<div>${card(c,{lv:0})}<div style="text-align:center;margin-top:4px"><s class="tip">${PR[c.r]}</s> <i class="cn"></i>${Math.round(PR[c.r]*.8)}<br><button class="sm" data-b="${id}" ${h.b[id]?'disabled':''}>${h.b[id]?'已購買':'購買'}</button></div></div>`}).join('')}</div>
+<div class="bar"><b>兌換所</b><span class="tip">靈丹 ${S.dust||0}</span></div>
+<div class="skill">靈石換靈丹：<i class="cn"></i>100 → 靈丹 10（今日 ${h.x}/5）<br><button class="sm" id="x1">兌換</button></div>
+<div class="skill">史詩召喚券：靈丹 150 → 史詩以上卡牌 1 張（15% 為傳說）<br><button class="sm" id="x2">兌換</button></div>
+<div class="skill">傳說召喚券：靈丹 500 → 傳說卡牌 1 張<br><button class="sm" id="x3">兌換</button></div>`;
+document.querySelectorAll('[data-b]').forEach(b=>b.onclick=()=>{const c=POOL[+b.dataset.b-1],pr=Math.round(PR[c.r]*.8);if(S.coins<pr)return modal('靈石不足！');S.coins-=pr;h.b[c.id]=1;reveal([c]);shop()});
+const dx=(n,f)=>{if((S.dust||0)<n)return modal('靈丹不足！');S.dust-=n;reveal([f()]);shop()};
+$('#x1').onclick=()=>{if(h.x>=5||S.coins<100)return modal(h.x>=5?'今日兌換次數已用完':'靈石不足！');S.coins-=100;S.dust=(S.dust||0)+10;h.x++;save();shop()};
+$('#x2').onclick=()=>dx(150,()=>pickR(Math.random()<.15?'legend':'epic'));$('#x3').onclick=()=>dx(500,()=>pickR('legend'))}
+const pullEv=()=>{const e=evNow().e,v=evS();v.p++;v.n++;S.pulls=(S.pulls||0)+1;dqs().p++;let c;
+if(v.p>=40)c=POOL[e.up-1];else{const x=rnd()*100;c=x<3?(Math.random()<.6?POOL[e.up-1]:pickR('legend')):pickR(x<12?'epic':x<32?'cosplay':'common')}
+if(c.id==e.up)v.p=0;return c};
+function evPage(){const n=evNow(),e=n.e,v=evS(),up=POOL[e.up-1];
+$('#app').innerHTML=`<div class="bar"><b>限定活動「${e.n}」</b><span class="tip">剩餘 ${n.left} 天</span></div><p class="tip">${e.d}。活動期間對戰靈石 ×1.5。</p>
+<div class="bar" style="align-items:flex-start"><div style="width:38%">${card(up,{lv:0})}</div><div class="tip" style="flex:1">限定 UP：<b>${up.name}</b><br>傳說 3%（其中 60% 為 UP）｜史詩 9%｜Cosplay 20%｜普通 68%<br>十連必出史詩以上｜第 40 抽必出 UP（目前 ${v.p}/40）</div></div>
+<div class="bar"><button id="e1">單抽 <i class="cn"></i>40</button><button id="e10">十連 <i class="cn"></i>360</button><button class="alt" id="et">免費券 ×${S.tk||0}</button></div>
+<div class="bar"><b>活動任務</b><span class="tip">活動結束後重置</span></div>`+EM.map(m=>`<div class="skill"><b>${m[1]}</b> (${Math.min(v[m[0]],m[2])}/${m[2]})｜獎勵 ${[m[3]?`<i class="cn"></i>${m[3]}`:'',m[4]?`靈丹 ${m[4]}`:'',m[5]?`免費券 ${m[5]}`:''].filter(x=>x).join('＋')} <button class="sm" data-em="${m[0]}" ${v[m[0]]>=m[2]&&!v.c[m[0]]?'':'disabled'}>${v.c[m[0]]?'已領取':v[m[0]]>=m[2]?'領取':'未完成'}</button></div>`).join('');
+const go=c=>{const cost=c==10?360:40;if(S.coins<cost)return modal('靈石不足！');S.coins-=cost;const got=Array.from({length:c},pullEv);if(c==10&&!got.some(x=>x.r=='epic'||x.r=='legend'))got[9]=pickR('epic');reveal(got);evPage()};
+$('#e1').onclick=()=>go(1);$('#e10').onclick=()=>go(10);
+$('#et').onclick=()=>{if((S.tk||0)<1)return modal('沒有免費券，完成活動任務即可獲得。');S.tk--;reveal([pullEv()]);evPage()};
+document.querySelectorAll('[data-em]').forEach(b=>b.onclick=()=>{const m=EM.find(x=>x[0]==b.dataset.em);v.c[m[0]]=1;S.coins+=m[3];S.dust=(S.dust||0)+m[4];S.tk=(S.tk||0)+m[5];save();jingle([523,659]);evPage()})}
+
+/* ===== 篩選排序 / 無盡塔 / 掃蕩 ===== */
+const RN={common:'普通',cosplay:'Cosplay',epic:'史詩',legend:'傳說'},EN=['火','水','木','光','暗'],RK={common:0,cosplay:1,epic:2,legend:3};
+const F=()=>S.flt||(S.flt={r:'',e:'',o:'',s:'id'});
+const filt=l=>{const f=F(),k={id:c=>c.id,p:c=>-(c.p+lvOf(c.id)),r:c=>-RK[c.r]*100-c.p,e:c=>c.el*100+c.id}[f.s]||(c=>c.id);return l.filter(c=>(!f.r||c.r==f.r)&&(f.e===''||c.el==f.e)&&(!f.o||(f.o=='1')==!!lvOf(c.id))).sort((x,y)=>k(x)-k(y))};
+const fbar=own=>{const f=F(),o=(a,v)=>a.map(([k,t])=>`<option value="${k}" ${k==v?'selected':''}>${t}</option>`).join('');return `<div class="bar" style="flex-wrap:wrap;gap:6px"><select data-f="r">${o([['','全部稀有度'],...Object.entries(RN)],f.r)}</select><select data-f="e">${o([['','全部屬性'],...EN.map((t,i)=>[i,t])],f.e)}</select>${own?`<select data-f="o">${o([['','全部'],['1','已擁有'],['0','未擁有']],f.o)}</select>`:''}<select data-f="s">${o([['id','依編號'],['p','戰力高→低'],['r','依稀有度'],['e','依屬性']],f.s)}</select></div>`};
+const bindF=fn=>document.querySelectorAll('[data-f]').forEach(e=>e.onchange=()=>{F()[e.dataset.f]=e.value;S.page=0;save();fn()});
+let TW=0;
+const RW=(st,tw,first)=>{const b=st%5==0;return tw?{rw:Math.round((40+10*tw)*(b?2:1)*(first?2:1)),du:b?10:4}:{rw:Math.round((30+8*st+(b?50:0))*(first?2:1)*1.5),du:b?8:3}};
+function sweep(n,tw){const q=dqs();q.sw=q.sw||0;if(q.sw+n>10)return modal(`今日掃蕩次數不足（每日 10 次，剩餘 ${10-q.sw}）`);const st=tw||S.sel,R=RW(st,tw,false),v=evS();q.sw+=n;q.b+=n;q.w+=n;v.w+=n;if(st%5==0)v.b+=n;S.w+=n;S.coins+=R.rw*n;S.dust=(S.dust||0)+R.du*n;save();jingle([523,659]);modal(`<h3>掃蕩完成 ×${n}</h3><p>${tw?'無盡塔 '+tw+' 層':'第 '+st+' 關'}｜獲得 <i class="cn"></i>${R.rw*n}＋靈丹 ${R.du*n}</p>`);battle()}
+
+/* ===== 屬性招式：每屬性 3 個普通招 + 1 個必殺（每 3 次攻擊蓄滿氣後自動施放） ===== */
+const MV=[['火球術','烈焰斬','爆炎衝擊','煉獄焚天'],['水刃','冰錐術','潮汐衝擊','絕對零度'],['荊棘纏繞','藤蔓鞭擊','葉刃風暴','靈眼樹之怒'],['分光劍影','巨劍術','流星墜落','修仙審判'],['暗影突襲','腐蝕之觸','夜幕斬','虛空吞噬']];
+const UM=[1.8,1.6,1.5,1.4,1.6],MCOL=['#ff5a3c','#3c9bff','#3cc46b','#e0b800','#9b5aff'];
+const UD=['傷害 ×1.8，使敵人灼燒 2 回合（每回合損失我方攻擊力 15% 的血量）','傷害 ×1.6，冰凍敵人使其下回合無法行動','傷害 ×1.5，並為我方最虛弱的前排回復傷害的 40%','傷害 ×1.4，必定暴擊且無視屬性被剋','傷害 ×1.6，並吸取傷害的 50% 回復自己'];
+/* 每張卡專屬招式：[普通招, 必殺]，依卡牌編號排列；必殺效果由「屬性 × 編號奇偶」決定 */
+const CM=`蒼龍水爆|龍淵怒濤 蒸汽水砲|潮汐轟鳴 浪花突刺|深海獵襲 林間迴響|森羅萬象 聖輝箭雨|天罰降臨 寒焰刃|赤炎滅世 冰晶重拳|極寒墜擊 竹影斬|翠嵐百裂 獸牙烈焰|狼炎焚野 烈陽斬|太陽審判 冰霜詛咒|寒獄凍域 戰斧旋風|曙光裂地 疾風連射|碧海穿心 水袖旋舞|霓裳潮汐 影藤暗襲|千葉暗殺 烈羽箭|赤羽流星 星幕暗矢|宇宙崩塌 暗潮砲擊|亡靈海盜砲 氣旋掌|五行寂滅 翠光綻放|生命聖歌 光學煉金|賢者之光 流沙漩渦|沙海吞沒 血色月光|緋紅聖域 熔岩之吻|熔炎爆誕 深淵水刃|滄海祭禮 音浪斬|綠野輓歌 光子砲|星砲轟擊 藤焰鞭|龍焰共鳴 星痕突刺|星座冰河 影縫|暗夜終焉 溪流連箭|碧波箭雨 聖盾衝撞|王城烈焰 魔導水彈|奧術洪流 暗巷飛刃|炎影穿梭 森靈水箭|狼嚎怒潮 天翼斬|白翼天啟 魔導水書|禁書大海嘯 櫻火居合|櫻吹雪燃 馴龍鞭|龍王覺醒 祝福之杖|修仙聖女降臨 亡靈召喚|墓園魂潮 斧擊烈焰|狂戰怒焰 迅捷箭|萬木歸一 火舞迴旋|烈焰舞姬 影手裏劍|暗月無影`.split(' ').map(x=>x.split('|'));
+const UD2=['傷害 ×1.8，灼燒目標 2 回合','傷害 ×1.8，灼燒目標，並讓火焰蔓延使其餘前排敵人受 50% 傷害並灼燒','傷害 ×1.6，冰凍目標使其下回合無法行動','傷害 ×1.6，並追加 80% 傷害的二連擊','傷害 ×1.5，為我方最虛弱的前排回復傷害的 40%','傷害 ×1.5，我方前排全體回復傷害的 20%','傷害 ×1.4，必定暴擊且無視屬性被剋','傷害 ×1.4，必定暴擊且無視被剋，並保留 1 層氣量（更快再放必殺）','傷害 ×1.6，吸取傷害的 50% 回復自己','傷害 ×1.6，詛咒目標：2 回合內攻擊 -30%'];
+/* ===== 說明人員（1 號卡）：打字機效果，說明完可收合成右下角圖示 ===== */
+let tyT=0;
+const typeIt=(el,t,done)=>{clearInterval(tyT);let i=0;el.textContent='';tyT=setInterval(()=>{el.textContent=t.slice(0,++i);if(i>=t.length){clearInterval(tyT);tyT=0;done&&done()}},40);return()=>{if(!tyT)return false;clearInterval(tyT);tyT=0;el.textContent=t;done&&done();return true}};
+const GP=()=>[`歡迎來到《修仙幻想》，修仙者！我是${POOL[0].name}，由我來帶你認識這個世界。`,
+'組隊：點擊卡牌加入／移出隊伍，需選滿 6 張：前 3 張上場，後 3 張待命。',
+'屬性：火剋木、木剋水、水剋火、光暗互剋（傷害 ×1.3，被剋 ×0.8）。暴擊率 15%（×1.5）。隊伍同屬性 ≥3 張戰力 ×1.1、≥4 張 ×1.2。',
+'招式：每張卡有專屬招式，攻擊 3 次蓄滿氣後可施放必殺，效果依屬性與卡牌而異（詳見卡牌詳情）。',
+'手動戰鬥：每名前排角色出手時，點選要攻擊的敵人（▲ 表示屬性剋制，也可按「自動完成」交給電腦）；氣蓄滿時按「⚡發動必殺」決定施放時機，不按則保留氣量。',
+'關卡：每 5 關為 BOSS，打贏會推進劇情。通關第 30 關後，會開放無盡塔與掃蕩。',
+'「抽卡」：用靈石召喚新卡。重複的卡會強化，滿級後化為靈丹，可在卡牌詳情繼續強化。',
+'「任務」有每日任務與故事章節，「商店」有每日特價，「活動」有限定卡池。',
+'以上就是基本玩法！需要時點右下角我的圖示，我隨時再為你說明。'];
+
+const GV={gacha:()=>['機率：傳說 2%、史詩 8%、Cosplay 20%、普通 70%。單抽 30 靈石，十連 270 靈石。',`保底：十連至少 1 張史詩以上；連續 30 抽未出史詩以上，第 30 抽必出傳說（目前 ${S.pity}/30）。`,'重複抽到同一張卡，戰力 +1，最多 +5；滿級後的重複卡會轉成靈丹，可在卡牌詳情繼續強化。','另外，「活動」頁有限定卡池，第 40 抽必出本檔 UP 卡，別錯過喔！']};
+function guideInit(){const g=document.body.appendChild(document.createElement('div'));g.id='gd';
+g.innerHTML=`<div class="gp min" id="gp"><div class="card common gpt"><div class="in a1"></div></div><div class="gb"><b>${POOL[0].name}</b><span class="gx" id="gx">收合 ✕</span><p id="gt"></p><button class="sm" id="gn">下一頁 ▶</button></div></div><div class="card common gi off" id="gi"><div class="in a1"></div><i>?</i></div>`;
+let P=GP(),i=0,sk=()=>false;
+const show=()=>{$('#gn').textContent=i<P.length-1?'下一頁 ▶':'完成 ✓';sk=typeIt($('#gt'),P[i])};
+const close=()=>{sk();$('#gp').classList.add('min');$('#gi').classList.remove('off');if(!S.tut){S.tut=1;save();checkDaily()}};
+const open=g=>{P=(!g&&GV[S.view]||GP)();i=0;$('#gp').classList.remove('min');$('#gi').classList.add('off');show()};
+$('#gn').onclick=()=>{if(sk())return;if(i<P.length-1){i++;show()}else close()};$('#gx').onclick=close;$('#gi').onclick=()=>open();
+if(S.tut){$('#gi').classList.remove('off');checkDaily()}else open(1)}
+
+/* 對戰 */
+const syn=ids=>{const n=[0,0,0,0,0];ids.forEach(i=>n[POOL[i-1].el]++);const m=Math.max(...n);return m>=4?1.2:m>=3?1.1:1};
+function battle(){const owned=filt(POOL.filter(c=>lvOf(c.id))),cs=S.sel<S.stage||(S.sel==30&&S.sty.o30),q=dqs(),t30=!!S.sty.o30,nf=S.deck.length<6?'disabled':'';
+const sy=syn(S.deck),tot=Math.round(S.deck.reduce((a,i)=>a+pw(POOL[i-1],lvOf(i)-1),0)*sy);
+$('#app').innerHTML=`<div class="bar"><span><button class="alt sm" id="sp">◀</button> <b>第${((S.sel-1)/5|0)+1}章 ${CH[(S.sel-1)/5|0].t}｜關卡 ${S.sel}${S.sel%5==0?'（BOSS）':''}</b> <button class="alt sm" id="sn">▶</button></span><span class="tip">已通關至 ${S.stage-1}｜${S.w} 勝 ${S.l} 敗${cs?` ｜掃蕩 ${10-(q.sw||0)}/10 <button class="alt sm" id="s1">×1</button> <button class="alt sm" id="s10">×10</button>`:''}</span></div><div class="bar"><b>無盡塔</b><span class="tip">${t30?'最高 '+S.tw+' 層（每 5 層 BOSS，每 10 層有里程碑獎勵）':'通關第 30 關後解鎖'}</span><span>${t30?`<button id="tw" ${nf}>挑戰第 ${S.tw+1} 層</button>${S.tw?` <button class="alt sm" id="tws">掃蕩第 ${S.tw} 層</button>`:''}`:''}</span></div><div class="bar"><b>組隊（${S.deck.length}/6）戰力 ${tot}${sy>1?`（屬性共鳴 ×${sy}）`:''}</b><span><button class="alt" id="ad">自動編隊</button> <button class="alt" id="fs">戰速：${S.fast?'快':'標準'}</button> <button class="alt" id="mm">${S.manual?'手動':'自動'}戰鬥</button> <button id="go" ${S.deck.length<6?'disabled':''}>出戰 ${SK[0].i}</button></span></div>
+
+${fbar(0)}<div class="grid wide">${owned.length?'':'<p class="tip">沒有符合條件的卡牌</p>'}${owned.map(c=>`<div data-pick="${c.id}">${card(c,{cls:S.deck.includes(c.id)?'sel':''})}</div>`).join('')}</div>`;
+document.querySelectorAll('[data-pick]').forEach(e=>e.onclick=()=>{const id=+e.dataset.pick,i=S.deck.indexOf(id);if(i>=0)S.deck.splice(i,1);else if(S.deck.length<6)S.deck.push(id);save();battle()});
+$('#sp').onclick=()=>{S.sel=Math.max(1,S.sel-1);save();battle()};$('#sn').onclick=()=>{S.sel=Math.min(S.stage,S.sel+1);save();battle()};
+$('#ad').onclick=()=>{autoDeck();save();battle()};$('#fs').onclick=()=>{S.fast=+!S.fast;save();battle()};$('#mm').onclick=()=>{S.manual=+!S.manual;save();battle()};$('#go').onclick=fight;bindF(battle);[['s1',()=>sweep(1)],['s10',()=>sweep(10)],['tw',()=>{TW=S.tw+1;fight2()}],['tws',()=>sweep(1,S.tw)]].forEach(([i,f])=>{const e=$('#'+i);if(e)e.onclick=f})}
+
+const sl=ms=>sleep(S.fast?ms*.35:ms);
+async function fight2(){
+const mk=ids=>ids.map(i=>{const c=POOL[i-1];return{c,hp:Math.round(pw(c,lvOf(i)-1)*syn(ids))}});
+const tw=TW;TW=0;const st=tw||S.sel,boss=st%5==0,lv=tw?8+tw*.7:st,lab=tw?'無盡塔 '+tw+' 層':'第 '+st+' 關';const me=mk(S.deck),mt=me.reduce((a,x)=>a+x.hp,0),target=mt*(0.5+0.06*lv)*(boss?1.25:1);
+const bp=boss?POOL.filter(c=>c.r=='legend'||c.r=='epic'):POOL;
+let en=Array.from({length:6},()=>({c:bp[Math.floor(Math.random()*bp.length)],hp:0}));if(boss){const b=POOL[CH[tw?(tw/5-1)%6:(st-1)/5|0].boss-1];en[0].c=Object.assign({},b,{p:45,name:'【BOSS】'+b.name})}const et0=en.reduce((a,x)=>a+x.c.p,0);en.forEach(x=>x.hp=Math.max(3,Math.round(x.c.p*target/et0)));
+const M={f:me.slice(0,3),r:me.slice(3)},E={f:en.slice(0,3),r:en.slice(3)};
+const tot=s=>[...s.f,...s.r].reduce((a,x)=>a+(x?Math.max(0,x.hp):0),0),cnt=s=>s.f.filter(x=>x).length+s.r.length;
+const qi=u=>`<div class="qi">${u.q>=2?'⚡必殺':'●'.repeat(u.q||0)+'○'.repeat(2-(u.q||0))}${u.bn>0?'🔥':''}${u.fz?'❄':''}${u.wk>0?'☠':''}</div>`;
+const row=(s,k)=>s.f.map((u,i)=>u?card(u.c,{p:Math.max(0,u.hp)}).replace('class="card','class="card s'+k+i).replace(/<\/div>$/,qi(u)+'</div>'):'<div class="card empty"></div>').join('');
+const pile=(n,r)=>`<div style="text-align:${r?'right':'left'}"><div class="pile">${n}</div></div>`;
+const paint=(label,opp)=>{$('#app').innerHTML=`<div class="tip">${lab}${boss?'（BOSS）':''}｜Guest ${tot(E)} ｜ Deacon ${tot(M)}</div>${pile(E.r.length,0)}<div class="grid">${row(E,'e')}</div><div class="banner ${opp?'opp':''}">${label}</div><div class="grid">${row(M,'m')}</div>${pile(M.r.length,1)}<div class="log" id="log"></div>${S.manual?'<button class="alt" id="ul" style="display:none">⚡ 發動必殺</button> <button class="alt" id="au">自動完成本回合</button>':''}`};
+const pop=(k,i,t,x='')=>{const e=$('.s'+k+i);if(e){e.classList.add('hit');e.insertAdjacentHTML('beforeend',`<div class="dmg ${x}">${t}</div>`)}};
+const log=t=>{const l=$('#log');if(l)l.innerHTML=t};
+let au=0,ul=0;const pick=(i,B,j)=>new Promise(r=>{if(au)return r(j);const m=$('.sm'+i);m&&m.classList.add('act');ul=0;const rdy=M.f[i]&&M.f[i].q>=2,ub=$('#ul');if(rdy&&ub){ub.style.display='';ub.onclick=()=>{ul=ul?0:1;ub.textContent=ul?'⚡ 必殺已選擇（點選敵人施放）':'⚡ 發動必殺'}}log(rdy?'氣已蓄滿！可按「⚡發動必殺」，再點選敵人':'點選要攻擊的敵人');
+[0,1,2].forEach(k=>{const e=$('.se'+k);if(e&&B.f[k]){e.classList.add('tg');e.onclick=()=>r(k);const em=emul(M.f[i].c.el,B.f[k].c.el);if(em!=1)e.insertAdjacentHTML('beforeend',`<div class="ad ${em<1?'bad':''}">${em>1?'▲':'▼'}</div>`)}});const b=$('#au');if(b)b.onclick=()=>{au=1;r(j)}});
+async function turn(A,B,ka,kb,label,opp){
+if(A===M)au=0;paint(label,opp);await sl(900);
+A.f.forEach(u=>{if(u&&u.c.sk==1){const w=A.f.filter(x=>x).sort((a,b)=>a.hp-b.hp)[0];w.hp+=5}});A.f.forEach(u=>{if(u&&u.wk>0)u.wk--});paint(label,opp);let bu=0;A.f.forEach((u,i)=>{if(u&&u.bn>0){u.hp-=u.bd;u.bn--;bu=1;pop(ka,i,'🔥-'+u.bd);if(u.hp<=0)A.f[i]=null}});if(bu){await sl(700);paint(label,opp)}
+for(let i=0;i<3;i++){const a=A.f[i];if(!a)continue;if(a.fz){a.fz=0;log(`${a.c.name} 被凍結，無法行動`);paint(label,opp);log(`${a.c.name} 被凍結，無法行動`);await sl(800);continue}let j=B.f[i]?i:B.f.findIndex(x=>x);if(j<0)break;if(S.manual&&A===M)j=await pick(i,B,j);const d=B.f[j];
+const el=a.c.el,cm=CM[a.c.id-1]||[],man=S.manual&&A===M,ult=(a.q||0)>=2&&(!man||au||ul),vr=a.c.id%2,mvn=ult?(cm[1]||MV[el][3]):(cm[0]||MV[el][((a.c.id||0)+(a.n=(a.n||0)+1))%3]);a.q=ult?0:Math.min(2,(a.q||0)+1);ul=0;
+const e0=$('.s'+ka+i);e0&&e0.insertAdjacentHTML('beforeend',`<div class="mvn ${ult?'ult':''}" style="background:${MCOL[el]}">${ult?'⚡ ':''}${mvn}</div>`);await sl(ult?700:450);
+const em0=emul(el,d.c.el),em=ult&&el==3?Math.max(1,em0):em0,cr=(ult&&el==3)||Math.random()<.15;const dmg=Math.round(a.hp*(a.c.sk==2?1.25:1)*(a.wk>0?.7:1)*em*(cr?1.5:1)*(ult?UM[el]:1));d.hp-=dmg;let fx='';
+if(ult){const bd=Math.max(1,Math.round(a.hp*.15));
+if(el==0){d.bn=2;d.bd=bd;fx='｜目標灼燒🔥';if(vr){B.f.forEach((x,k)=>{if(x&&x!==d){const h=Math.round(dmg*.5);x.hp-=h;pop(kb,k,'-'+h);x.bn=2;x.bd=Math.round(bd*.7)||1;if(x.hp<=0)B.f[k]=null}});fx='｜火焰蔓延全場🔥'}}
+else if(el==1){if(vr){const h=Math.round(dmg*.8);d.hp-=h;fx=`｜追擊 ${h}`}else{d.fz=1;fx='｜目標被凍結❄'}}
+else if(el==2){if(vr){const h=Math.round(dmg*.2);A.f.forEach(x=>{if(x)x.hp+=h});fx=`｜我方前排各回復 ${h}`}else{const w=A.f.filter(x=>x).sort((x,y)=>x.hp-y.hp)[0],h=Math.round(dmg*.4);w.hp+=h;fx=`｜${w.c.name} 回復 ${h}`}}
+else if(el==3){if(vr){a.q=1;fx='｜保留氣量，更快再次必殺'}}
+else{if(vr){d.wk=3;fx='｜目標被詛咒☠（攻擊 -30%）'}else{const h=Math.round(dmg*.5);a.hp+=h;fx=`｜吸取 ${h}`}}}
+pop(kb,j,'-'+dmg,cr?'crit':em>1?'adv':'');snd(cr?880:em>1?520:300,.1);let t=`${a.c.name} 使出【${mvn}】攻擊 ${d.c.name}，造成 ${dmg}${cr?'（暴擊！）':''}${em>1?'（屬性剋制）':em<1?'（屬性被剋）':''}${fx}`;
+if(d.c.sk==0&&d.hp>0){const k=Math.round(d.hp*.3);a.hp-=k;pop(ka,i,'-'+k);t+=`｜${SK[0].i} 反擊 ${k}`}
+log(t);await sl(1000);if(d.hp<=0)B.f[j]=null;if(a.hp<=0)A.f[i]=null;paint(label,opp);log(t)}
+for(const s of[A,B])for(let i=0;i<3;i++)if(!s.f[i]&&s.r.length)s.f[i]=s.r.shift();
+paint(label,opp);await sl(600)}
+let win=null;
+for(let n=0;n<10&&win===null;n++){
+await turn(M,E,'m','e','我的回合 My Turn',0);if(!cnt(E)){win=true;break}
+await turn(E,M,'e','m','對手回合 Opponent\'s Turn',1);if(!cnt(M)){win=false;break}}
+if(win===null)win=tot(M)>=tot(E);
+let rw=10,first=false,R={du:0};{const q=dqs();q.b++;if(win){q.w++;const v=evS();v.w++;if(boss)v.b++}}if(win){S.w++;first=tw?tw>S.tw:st===S.stage&&!(st==30&&S.sty.o30);R=RW(st,tw,first);rw=R.rw;S.dust=(S.dust||0)+R.du;if(tw){if(first){S.tw=tw;if(tw%10==0){rw+=tw*20;S.dust+=20}}}else if(first&&S.stage<30){S.stage++;S.sel=S.stage}jingle([523,659,784])}else{S.l++;snd(160,.4,'sawtooth')}S.coins+=rw;save();
+modal(`<h2>${win?'勝利！':'敗北'}</h2><p>${lab}${boss?'（BOSS）':''}｜我方剩餘 ${Math.round(tot(M))}｜對手 ${Math.round(tot(E))}</p><p>獲得 <i class="cn"></i>${rw}${first?'（首通雙倍）':''}${win?`＋靈丹 ${R.du}`:''}${tw&&first&&tw%10==0?'｜里程碑獎勵 +'+tw*20+' 靈石、靈丹 20':''}</p>`);
+$('#modal button').onclick=()=>{$('#modal').classList.add('hide');if(win&&boss&&!tw&&!S.sty['o'+st]){S.sty['o'+st]=1;const ci=(st-1)/5|0,R=(ci+1)*100;S.coins+=R;save();story(CH[ci].o.concat([[0,'章節獎勵 '+R+' 靈石已入帳']]),battle)}else battle()}}
+/* 3D 傾斜 + 全息 */
+let tc=null;const clr=c=>{if(!c)return;c.classList.remove('tilt');['--rx','--ry','--tx','--ty'].forEach(k=>c.style.removeProperty(k))};
+document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.card');if(c!==tc){clr(tc);tc=c}
+if(!c||c.classList.contains('lock'))return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width,y=(e.clientY-r.top)/r.height;
+c.classList.add('tilt');const st=c.style;st.setProperty('--rx',((0.5-y)*26).toFixed(1)+'deg');st.setProperty('--ry',((x-0.5)*26).toFixed(1)+'deg');
+st.setProperty('--mx',x*100+'%');st.setProperty('--my',y*100+'%');st.setProperty('--bx',x*100+'%');st.setProperty('--by',y*100+'%');
+st.setProperty('--tx',((0.5-x)*10).toFixed(1)+'px');st.setProperty('--ty',((0.5-y)*10).toFixed(1)+'px')});
+document.addEventListener('pointerup',e=>{if(e.pointerType!=='mouse'){clr(tc);tc=null}});
+document.addEventListener('pointerleave',()=>{clr(tc);tc=null},true);
+const DAY=[50,60,80,100,120,150,300],ld=x=>x.toLocaleDateString('sv');
+function checkDaily(){const t=ld(new Date()),d=S.daily;if(d.d===t)return;const y=ld(new Date(Date.now()-864e5)),st=d.d===y?d.s%7:0,amt=DAY[st];
+modal(`<h3>每日登入獎勵</h3><div class="grid" style="grid-template-columns:repeat(7,1fr)">${DAY.map((v,i)=>`<div class="day ${i==st?'on':i<st?'done':''}">第${i+1}天<br><i class="cn"></i>${v}</div>`).join('')}</div><p>連續登入 ${st+1} 天，可領 <i class="cn"></i>${amt}</p><p><button id="clm">領取</button></p>`);
+$('#clm').onclick=()=>{S.coins+=amt;S.daily={d:t,s:st+1};save();snd(660);$('#modal').classList.add('hide')}}
+let dp=null;const standalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();dp=e});
+addEventListener('appinstalled',()=>$('#inst').classList.add('hide'));
+$('#snd').onclick=()=>{S.mute=S.mute?0:1;save();snd(600)};
+$('#inst').onclick=async()=>{if(dp){dp.prompt();await dp.userChoice;dp=null;return}
+const ua=navigator.userAgent,ios=/iphone|ipad|ipod/i.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+modal(`<h3>安裝成 App</h3>${ios?'<div class="skill">iPhone／iPad（Safari）：點「分享」→「加入主畫面」</div>':''}<div class="skill">Android（Chrome）：右上角「⋮」→「安裝應用程式」</div><div class="skill">電腦（Chrome／Edge）：網址列右側的安裝圖示</div><p class="tip">需用 HTTPS 網址開啟（例如 GitHub Pages、Netlify）；安裝後可離線遊玩。</p>`)};
+if(standalone())$('#inst').classList.add('hide');
+if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('sw.js').catch(()=>{});
+save();view('battle');guideInit();
+</script></body></html>
