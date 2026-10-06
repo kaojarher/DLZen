@@ -1,6 +1,6 @@
 {
- "name": "星辰幻想",
- "short_name": "星辰幻想",
+ "name": "修仙幻想",
+ "short_name": "修仙幻想",
  "description": "集卡、抽卡、屬性對戰的離線卡牌遊戲",
  "start_url": "./index.html",
  "scope": "./",
